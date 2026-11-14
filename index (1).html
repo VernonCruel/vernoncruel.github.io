@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bartosz Kozieł</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: five full-width bands alternating off-white and graphite. Centred, oversized type opens and closes the page;
+   the middle bands use a narrow label column beside a wide content column, with rounded tiles for anything visual.
+   Single fixed palette by choice: the light/dark rhythm is the design. */
+:root{
+  color-scheme: light;
+  --paper:#f5f5f7;
+  --white:#ffffff;
+  --graphite:#1d1d1f;
+  --graphite-2:#2a2a2d;
+  --ink:#1d1d1f;
+  --ink-2:#6e6e73;
+  --snow:#f5f5f7;
+  --snow-2:#a1a1a6;
+  --blue:#0071e3;
+  --blue-dark:#2997ff;
+  --hair:rgba(0,0,0,.1);
+  --hair-dark:rgba(255,255,255,.12);
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Helvetica Neue",Arial,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;
+  --gutter:clamp(22px,5vw,64px);
+  --max:1080px;
+  --ease:cubic-bezier(.22,.61,.21,1);
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:52px;-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:19px;line-height:1.5;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance}
+
+/* ---------- Nav ---------- */
+.nav{position:fixed;inset:0 0 auto 0;z-index:20;height:52px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 var(--gutter);
+  background:rgba(245,245,247,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--hair);
+  transition:background .5s var(--ease),color .5s var(--ease),border-color .5s var(--ease)}
+.nav.dark{background:rgba(29,29,31,.72);color:var(--snow);border-bottom-color:var(--hair-dark)}
+.nav .name{font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.nav ul{display:flex;gap:clamp(16px,3vw,34px);list-style:none;padding:0;overflow-x:auto;scrollbar-width:none}
+.nav ul::-webkit-scrollbar{display:none}
+.nav ul a{font-size:12.5px;letter-spacing:0;opacity:.72;white-space:nowrap;padding:8px 0;display:block;transition:opacity .25s}
+.nav ul a:hover,.nav ul a.active{opacity:1}
+
+/* ---------- Bands ---------- */
+section{padding:clamp(88px,13vw,168px) 0}
+.dark{background:var(--graphite);color:var(--snow)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+.label{font-size:15px;font-weight:600;color:var(--ink-2);letter-spacing:-.005em}
+.dark .label{color:var(--snow-2)}
+h2{font-size:clamp(36px,5.4vw,64px);line-height:1.06;letter-spacing:-.028em;margin-top:10px;max-width:15ch}
+.sub{color:var(--ink-2);max-width:56ch}
+.dark .sub{color:var(--snow-2)}
+.split{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:clamp(28px,6vw,80px);margin-top:clamp(48px,7vw,84px)}
+.split>h3{font-size:15px;font-weight:600;color:var(--ink-2);letter-spacing:-.005em;padding-top:4px}
+.dark .split>h3{color:var(--snow-2)}
+.link{color:var(--blue);font-size:19px;display:inline-flex;align-items:center;gap:6px}
+.dark .link{color:var(--blue-dark)}
+.link::after{content:"›";font-size:1.15em;line-height:1;transform:translateY(-1px);transition:transform .3s var(--ease)}
+.link:hover{text-decoration:underline}
+.link:hover::after{transform:translate(3px,-1px)}
+.reveal{opacity:.18;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- Side decoration: orbits (space) and dot lattices (materials) ---------- */
+section{position:relative;overflow:hidden;--ring:rgba(0,0,0,.1);--dot:rgba(0,0,0,.22)}
+section.dark{--ring:rgba(255,255,255,.13);--dot:rgba(255,255,255,.22)}
+.wrap{position:relative;z-index:1}
+.deco{position:absolute;pointer-events:none;z-index:0;will-change:transform}
+.orbit{width:var(--s);aspect-ratio:1;border-radius:50%;border:1px solid var(--ring)}
+.orbit::before,.orbit::after{content:"";position:absolute;border-radius:50%;border:1px solid var(--ring)}
+.orbit::before{inset:14%}
+.orbit::after{inset:30%;border-style:dashed}
+.orbit i{position:absolute;inset:0;animation:spin var(--t,48s) linear infinite}
+.orbit i::before{content:"";position:absolute;top:-4px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(0,113,227,.12)}
+.dark .orbit i::before{background:var(--blue-dark);box-shadow:0 0 12px rgba(41,151,255,.7)}
+.orbit i+i{inset:14%;animation-duration:calc(var(--t,48s)*.62);animation-direction:reverse}
+.orbit i+i::before{width:5px;height:5px;margin-left:-2.5px;top:-3px;background:var(--ink-2);box-shadow:none}
+.dark .orbit i+i::before{background:var(--snow-2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lattice{width:clamp(220px,26vw,380px);height:clamp(280px,34vw,480px);background-image:radial-gradient(circle,var(--dot) 1.3px,transparent 1.8px);background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(closest-side,#000 10%,transparent);mask-image:radial-gradient(closest-side,#000 10%,transparent)}
+.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:15;display:none;flex-direction:column;gap:14px;mix-blend-mode:difference}
+.rail a{display:flex;align-items:center;gap:10px;color:#fff;font-size:11.5px;letter-spacing:0}
+.rail a::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;opacity:.35;transition:opacity .3s,transform .4s var(--ease)}
+.rail a span{opacity:0;transform:translateX(-4px);transition:opacity .3s,transform .3s var(--ease)}
+.rail a:hover span,.rail a:focus-visible span{opacity:.8;transform:none}
+.rail a.active::before{opacity:1;transform:scale(1.7)}
+@media (min-width:1240px){.rail{display:flex}}
+@media (max-width:760px){.deco.hide-s{display:none}.deco{opacity:.7}}
+
+/* ---------- 1. Home ---------- */
+.home{padding:calc(52px + clamp(64px,10vw,120px)) 0 clamp(72px,10vw,120px);text-align:center}
+.home>.wrap>*{animation:rise 1.1s var(--ease) both}
+.home .kicker{font-size:clamp(17px,1.9vw,21px);font-weight:600;color:var(--ink-2)}
+.home h1{font-size:clamp(60px,11.5vw,136px);line-height:.98;letter-spacing:-.045em;font-weight:700;margin:10px 0 0;animation-delay:.08s}
+.home .headline{font-family:var(--display);font-size:clamp(24px,3.3vw,40px);font-weight:600;line-height:1.14;letter-spacing:-.022em;margin:22px auto 0;max-width:30ch;text-wrap:balance;animation-delay:.18s;
+  background:linear-gradient(100deg,#1d1d1f 20%,#6e6e73 60%,#1d1d1f 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.home .intro{color:var(--ink-2);max-width:50ch;margin:22px auto 0;animation-delay:.28s}
+.home .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:14px 30px;align-items:center;margin-top:30px;animation-delay:.38s}
+.pill{background:var(--blue);color:#fff;font-size:17px;padding:11px 24px;border-radius:999px;transition:background .25s,transform .3s var(--ease)}
+.pill:hover{background:#0077ed;transform:scale(1.03)}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* portrait tile: swap the <div class="portrait"> content for an <img> to use a photo */
+.portrait{position:relative;margin:clamp(52px,7vw,84px) auto 0;width:min(100%,860px);aspect-ratio:16/8.4;border-radius:clamp(22px,3vw,36px);overflow:hidden;animation-delay:.5s;
+  background:radial-gradient(120% 140% at 18% 0%,#3b3b40 0%,#1d1d1f 46%,#0e0e10 100%);box-shadow:0 40px 80px -40px rgba(0,0,0,.45);display:grid;place-items:center;color:#f5f5f7}
+.portrait::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 80% 110%,rgba(41,151,255,.28),transparent 60%),radial-gradient(40% 60% at 10% 100%,rgba(255,255,255,.08),transparent 70%)}
+.portrait::after{content:"";position:absolute;inset:-40% -60%;background:linear-gradient(105deg,transparent 44%,rgba(255,255,255,.09) 50%,transparent 56%);animation:sheen 9s ease-in-out infinite}
+@keyframes sheen{0%,60%{transform:translateX(-30%)}100%{transform:translateX(30%)}}
+.portrait .mono{position:relative;font-family:var(--display);font-weight:700;font-size:clamp(72px,15vw,180px);letter-spacing:-.06em;line-height:1;
+  background:linear-gradient(180deg,#fff 10%,#8e8e93 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.portrait .cap{position:absolute;left:0;right:0;bottom:clamp(16px,2.6vw,28px);font-size:13px;color:#a1a1a6;letter-spacing:0}
+
+/* flip card */
+.flip{margin:clamp(52px,7vw,84px) auto 0;width:min(100%,860px);perspective:1800px;cursor:pointer;animation-delay:.5s;border-radius:clamp(22px,3vw,36px);-webkit-tap-highlight-color:transparent}
+.flip-inner{display:grid;transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.3,.05,.15,1)}
+.flip .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip .portrait{margin:0;width:100%;height:100%}
+.flip.on .flip-inner{transform:rotateY(180deg)}
+@media (hover:hover){.flip:hover .flip-inner{transform:rotateY(7deg)}.flip.on:hover .flip-inner{transform:rotateY(173deg)}}
+.flip .hint{position:absolute;top:clamp(14px,2.2vw,24px);right:clamp(14px,2.2vw,24px);font-size:12.5px;color:#d1d1d6;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 13px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2}
+.flip .back{position:relative;transform:rotateY(180deg);border-radius:clamp(22px,3vw,36px);overflow:hidden;text-align:left;color:var(--snow);
+  background:radial-gradient(120% 140% at 82% 0%,#3b3b40 0%,#1d1d1f 46%,#0e0e10 100%);box-shadow:0 40px 80px -40px rgba(0,0,0,.45);
+  padding:clamp(56px,6vw,64px) clamp(24px,5vw,60px) clamp(28px,4.4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:clamp(16px,2.4vw,26px)}
+.flip .back::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 20% 110%,rgba(41,151,255,.24),transparent 60%);pointer-events:none}
+.flip .back>*:not(.hint){position:relative}
+.flip .back .label{color:var(--snow-2)}
+.flip .back .txt{font-family:var(--display);font-weight:600;font-size:clamp(18px,2.5vw,27px);line-height:1.28;letter-spacing:-.018em;max-width:34em}
+.flip .back .chips li{font-size:14px;padding:6px 14px}
+
+/* project flip cards */
+.proj-flip{perspective:1600px;cursor:pointer;border-radius:clamp(22px,2.6vw,30px);-webkit-tap-highlight-color:transparent}
+.proj-flip .flip-inner{height:100%}
+.proj-flip .face{grid-area:1/1;position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:none}
+.proj-flip .face.proj:hover{transform:none}
+.proj-flip .face.pback,.proj-flip .face.pback:hover{transform:rotateY(180deg)}
+.proj-flip.on .flip-inner{transform:rotateY(180deg)}
+@media (hover:hover){.proj-flip:hover .flip-inner{transform:rotateY(8deg)}.proj-flip.on:hover .flip-inner{transform:rotateY(172deg)}}
+.proj-flip .hint{position:absolute;top:18px;right:18px;font-size:12px;color:#d1d1d6;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px;z-index:2}
+.proj-flip .front .txt{padding-top:clamp(56px,5vw,64px)}
+.pback{justify-content:center;padding:clamp(60px,6vw,72px) clamp(24px,3.4vw,40px) clamp(28px,3.4vw,40px);background:radial-gradient(120% 120% at 85% 0%,#3a3a3f 0%,#2a2a2d 55%,#232326 100%)}
+.pback p.desc{color:var(--snow);font-family:var(--display);font-weight:600;font-size:clamp(20px,2.3vw,26px);line-height:1.28;letter-spacing:-.018em;max-width:22em;margin-top:6px}
+
+/* ---------- 2. About ---------- */
+.statement{font-family:var(--display);font-weight:600;font-size:clamp(27px,3.9vw,46px);line-height:1.2;letter-spacing:-.022em;max-width:22ch*2;margin-top:clamp(36px,5vw,56px)}
+.statement{max-width:900px}
+.statement span{color:#5a5a5f;transition:color .5s var(--ease)}
+.statement span.lit{color:var(--snow)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,64px)}
+.cols h4{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.015em;margin-bottom:10px}
+.cols p{color:var(--snow-2);font-size:17px;line-height:1.55}
+.chips{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0}
+.chips li{font-size:15px;padding:8px 16px;border-radius:999px;background:var(--graphite-2);color:var(--snow);border:1px solid var(--hair-dark)}
+
+/* ---------- 3. Education ---------- */
+.rows{list-style:none;padding:0;border-top:1px solid var(--hair)}
+.rows li{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:8px 32px;padding:28px 0;border-bottom:1px solid var(--hair)}
+.rows time{color:var(--ink-2);font-size:17px;font-variant-numeric:tabular-nums;padding-top:5px}
+.rows h4{font-family:var(--display);font-size:clamp(22px,2.5vw,28px);font-weight:600;letter-spacing:-.02em;line-height:1.15}
+.rows .where{font-size:17px;margin-top:4px}
+.rows p.note{color:var(--ink-2);font-size:17px;margin-top:8px;max-width:54ch}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.tile{background:var(--white);border-radius:22px;padding:24px 26px;display:flex;flex-direction:column;gap:6px;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.tile:hover{transform:translateY(-4px);box-shadow:0 24px 48px -28px rgba(0,0,0,.28)}
+.tile small{font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tile strong{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.tile span{font-size:15px;color:var(--ink-2)}
+
+/* ---------- 4. Projects & Hobbies ---------- */
+.projects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:clamp(48px,7vw,84px)}
+.proj{background:var(--graphite-2);border-radius:clamp(22px,2.6vw,30px);overflow:hidden;display:flex;flex-direction:column;transition:transform .6s var(--ease)}
+.proj:hover{transform:scale(1.012)}
+.proj .txt{padding:clamp(26px,3.4vw,40px) clamp(24px,3.4vw,40px) 0}
+.proj small{font-size:13px;color:var(--snow-2)}
+.proj h3{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.028em;line-height:1.08;margin:6px 0 10px}
+.proj p{color:var(--snow-2);font-size:17px;line-height:1.5;max-width:40ch}
+.proj .link{font-size:17px;margin-top:14px}
+.proj .art{margin-top:auto;padding:clamp(26px,3.4vw,40px) clamp(24px,3.4vw,40px) 0;display:flex;align-items:flex-end;min-height:220px}
+/* art 1: weekly plan */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;width:100%;align-items:end;height:190px;background:#151517;border-radius:18px 18px 0 0;padding:20px 20px 0;border:1px solid var(--hair-dark);border-bottom:0}
+.week i{display:block;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#5b5b61,#3a3a3e);height:var(--h);transform-origin:bottom;transition:transform 1.1s var(--ease)}
+.week i.on{background:linear-gradient(180deg,#5ab0ff,#0071e3)}
+.proj-flip:not(.in) .week i{transform:scaleY(.25)}
+/* art 2: line chart */
+.chart{width:100%;height:190px;background:#151517;border-radius:18px 18px 0 0;border:1px solid var(--hair-dark);border-bottom:0;display:block}
+.chart path.ln{stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.8s var(--ease)}
+.proj-flip:not(.in) .chart path.ln{stroke-dashoffset:1}
+.hobbies{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:18px}
+.hob{background:var(--graphite-2);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:10px;min-height:132px}
+.proj.empty{background:transparent;border:1.5px dashed rgba(255,255,255,.22)}
+.proj.empty .txt{padding-bottom:clamp(26px,3.4vw,40px);margin:auto 0}
+.proj.empty h3{color:var(--snow-2)}
+.cols p b{color:var(--snow);font-weight:600}
+.cols p.meta{margin-bottom:10px;font-variant-numeric:tabular-nums}
+.hob svg{width:28px;height:28px;stroke:var(--snow);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:auto}
+.hob strong{font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.015em}
+.hob span{font-size:15px;color:var(--snow-2);line-height:1.4}
+.minor{font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.015em;margin-top:clamp(48px,6vw,72px)}
+
+/* ---------- 5. Contact ---------- */
+.contact{text-align:center;padding-bottom:clamp(64px,8vw,96px)}
+.contact h2{margin-inline:auto;font-size:clamp(48px,8.4vw,104px);letter-spacing:-.04em;line-height:1;max-width:none}
+.contact .sub{margin:20px auto 0}
+.mail{display:inline-block;font-family:var(--display);font-weight:600;font-size:clamp(22px,3.6vw,40px);letter-spacing:-.022em;margin-top:40px;color:var(--blue);overflow-wrap:anywhere}
+.mail:hover{text-decoration:underline}
+.copy{display:block;margin:16px auto 0;font:inherit;font-size:15px;color:var(--ink);background:var(--white);border:1px solid var(--hair);border-radius:999px;padding:8px 18px;cursor:pointer;transition:background .25s,transform .3s var(--ease)}
+.copy:hover{transform:scale(1.04)}
+.social{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:680px;margin:clamp(44px,6vw,64px) auto 0;text-align:left}
+.social a{background:var(--white);border-radius:22px;padding:22px 24px;display:flex;align-items:center;gap:16px;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.social a:hover{transform:translateY(-4px);box-shadow:0 24px 48px -28px rgba(0,0,0,.28)}
+.social svg{width:30px;height:30px;flex:none;fill:var(--ink)}
+.social small{display:block;font-size:13px;color:var(--ink-2)}
+.social b{font-weight:600;font-size:17px;letter-spacing:-.012em;overflow-wrap:anywhere}
+footer{padding:22px 0 34px;font-size:12.5px;color:var(--ink-2);letter-spacing:0}
+footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* ---------- Responsive ---------- */
+@media (max-width:860px){
+  .hobbies{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .projects{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  body{font-size:17px}
+  .nav{justify-content:center}.nav .name{display:none}
+  .split{grid-template-columns:minmax(0,1fr);gap:18px}
+  .cols,.tiles,.social{grid-template-columns:minmax(0,1fr)}
+  .rows li{grid-template-columns:minmax(0,1fr)}
+  .portrait{aspect-ratio:4/3.4}
+}
+@media (max-width:420px){.hobbies{grid-template-columns:minmax(0,1fr)}.hob{min-height:0}.hob svg{margin-bottom:8px}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="name" href="#home">Bartosz Kozieł</a>
+  <ul>
+    <li><a href="#home">Start</a></li>
+    <li><a href="#about">O mnie</a></li>
+    <li><a href="#education">Edukacja</a></li>
+    <li><a href="#projects">Projekty</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</header>
+
+<nav class="rail" id="rail" aria-label="Sekcje">
+  <a href="#home"><span>Start</span></a>
+  <a href="#about"><span>O mnie</span></a>
+  <a href="#education"><span>Edukacja</span></a>
+  <a href="#projects"><span>Projekty</span></a>
+  <a href="#contact"><span>Kontakt</span></a>
+</nav>
+
+<main>
+<!-- ============ 1. START ============ -->
+<section class="home" id="home" data-tone="light">
+  <div class="deco orbit " data-speed=".10" style="--s:clamp(360px,46vw,680px);right:calc(clamp(360px,46vw,680px) * -.5);top:70px;--t:56s" aria-hidden="true"><i></i><i></i></div>
+  <div class="deco orbit " data-speed="-.07" style="--s:clamp(280px,34vw,500px);left:calc(clamp(280px,34vw,500px) * -.55);top:46%;--t:44s" aria-hidden="true"><i></i><i></i></div>
+  <div class="deco lattice hide-s" data-speed=".05" style="left:2vw;top:90px" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Student AGH</p>
+    <h1>Bartosz Kozieł</h1>
+    <p class="headline">Informatyka, Materiały, Kosmos.</p>
+    <p class="intro">Inżynier edukacji techniczno-informatycznej.<br>Przyszły magister technologii kosmicznych.</p>
+    <div class="actions">
+      <a class="pill" href="#contact">Napisz do mnie</a>
+      <a class="link" href="#about">Ambicje i doświadczenie</a>
+    </div>
+    <!-- KARTA: przód = monogram (można zastąpić zdjęciem: <img src="data:..." alt="" style="width:100%;height:100%;object-fit:cover">), tył = tekst o mnie -->
+    <div class="flip" id="flip" role="button" tabindex="0" aria-pressed="false" aria-label="Karta o mnie. Kliknij, aby odwrócić.">
+      <div class="flip-inner">
+        <div class="face portrait" id="flip-front">
+          <span class="hint">Kliknij, aby odwrócić</span>
+          <span class="mono">BK</span>
+          <span class="cap">Akademia Górniczo-Hutnicza, Kraków</span>
+        </div>
+        <div class="face back" id="flip-back" aria-hidden="true">
+          <span class="hint">Odwróć z powrotem</span>
+          <p class="label">O mnie</p>
+          <p class="txt">Jestem studentem technologii kosmicznych na AGH, ciekawym świata i nowych technologii. Lubię uczyć się nowych rzeczy, podejmować wyzwania i rozwijać własne pomysły. Poza studiami stawiam na aktywność fizyczną – sport, rywalizacja i dobra zabawa to ważna część mojego życia.</p>
+          <ul class="chips">
+            <li>Kosmos</li><li>Koszykówka</li><li>Szachy</li><li>Pianino</li><li>Social media</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. O MNIE ============ -->
+<section class="dark" id="about" data-tone="dark">
+  <div class="deco orbit " data-speed=".08" style="--s:clamp(320px,40vw,600px);right:calc(clamp(320px,40vw,600px) * -.55);top:12%;--t:60s" aria-hidden="true"><i></i><i></i></div>
+  <div class="deco lattice hide-s" data-speed="-.05" style="left:-60px;bottom:-40px" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="label reveal">O mnie</p>
+    <h2 class="reveal">Ambicje i doświadczenie.</h2>
+    <div class="split reveal">
+      <h3>Ambicje</h3>
+      <div class="cols">
+        <div><h4>Praca magisterska</h4><p>Pracuję nad pracą magisterską poświęconą ochronie powierzchni refleksyjnych przed ściernym oddziaływaniem regolitu księżycowego. To zagadnienie, które może mieć znaczenie dla trwałości materiałów i komponentów wykorzystywanych w przyszłych misjach kosmicznych.</p></div>
+        <div><h4>W dłuższej perspektywie</h4><p>Chcę rozwijać się na styku informatyki i zaawansowanych technologii, łącząc umiejętności techniczne z kreatywnym rozwiązywaniem problemów. Zależy mi na pracy przy projektach, które pozwalają nieustannie się uczyć, eksperymentować i tworzyć coś wartościowego.</p></div>
+      </div>
+    </div>
+    <div class="split reveal">
+      <h3>Doświadczenie</h3>
+      <div class="cols">
+        <div><h4>Nauczyciel informatyki, praktyka</h4><p class="meta"><b>Zespół Szkolno-Przedszkolny, Wolbrom</b><br>marzec – czerwiec 2025</p><p>Wspierałem prowadzenie lekcji informatyki i samodzielnie prowadziłem zajęcia z ćwiczeniami praktycznymi.</p></div>
+        <div><h4>Barman</h4><p class="meta"><b>Filutek</b><br>październik 2023 – marzec 2025</p><p>Obsługa baru, przyjmowanie i weryfikacja dostaw oraz przygotowanie dwóch koncertów miesięcznie.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. EDUKACJA ============ -->
+<section id="education" data-tone="light">
+  <div class="deco lattice hide-s" data-speed=".06" style="right:-40px;top:60px" aria-hidden="true"></div>
+  <div class="deco orbit hide-s" data-speed="-.06" style="--s:clamp(300px,36vw,520px);left:calc(clamp(300px,36vw,520px) * -.6);bottom:-8%;--t:52s" aria-hidden="true"><i></i><i></i></div>
+  <div class="wrap">
+    <p class="label reveal">Edukacja</p>
+    <h2 class="reveal">Od sali lekcyjnej do orbity.</h2>
+
+    <div class="split reveal">
+      <h3>Studia</h3>
+      <ol class="rows">
+        <li>
+          <time>2026 – 2027</time>
+          <div><h4>Magister, Technologie kosmiczne</h4><p class="where">Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie</p>
+          <p class="note">Studia magisterskie w zakresie technologii kosmicznych.</p></div>
+        </li>
+        <li>
+          <time>2022 – 2026</time>
+          <div><h4>Studia inżynierskie, Edukacja techniczno-informatyczna</h4><p class="where">Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie</p>
+          <p class="note">Teoria połączona z praktycznym zastosowaniem w nauczaniu przedmiotów informatycznych.</p></div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="split reveal">
+      <h3>Kursy</h3>
+      <div class="tiles">
+        <div class="tile"><small>Google</small><strong>Foundations: Data, Data, Everywhere</strong><span>Podstawy analizy danych</span></div>
+        <div class="tile"><small>Microsoft</small><strong>Introduction to Computers and Operating Systems and Security</strong><span>Komputery, systemy operacyjne i bezpieczeństwo</span></div>
+        <div class="tile"><small>MathWorks</small><strong>MATLAB Onramp</strong><span>Podstawy pracy w MATLAB-ie</span></div>
+        <div class="tile"><small>ESA · w trakcie</small><strong>Space for Everyone</strong><span>Kurs Europejskiej Agencji Kosmicznej</span></div>
+      </div>
+    </div>
+
+    <div class="split reveal">
+      <h3>Umiejętności i języki</h3>
+      <div class="tiles">
+        <div class="tile"><small>Programowanie</small><strong>C++</strong><span>Podstawy</span></div>
+        <div class="tile"><small>Bazy danych</small><strong>SQL</strong><span>Podstawy</span></div>
+        <div class="tile"><small>Sieci</small><strong>TCP/IP</strong><span>Podstawy sieci komputerowych</span></div>
+        <div class="tile"><small>Język obcy</small><strong>Angielski</strong><span>Poziom B2</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. PROJEKTY I HOBBY ============ -->
+<section class="dark" id="projects" data-tone="dark">
+  <div class="deco orbit " data-speed=".08" style="--s:clamp(320px,40vw,600px);left:calc(clamp(320px,40vw,600px) * -.58);top:6%;--t:64s" aria-hidden="true"><i></i><i></i></div>
+  <div class="deco lattice hide-s" data-speed="-.05" style="right:-50px;bottom:6%" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="label reveal">Projekty i hobby</p>
+    <h2 class="reveal">Co zrobiłem i&nbsp;co lubię.</h2>
+
+    <div class="projects">
+      <article class="proj-flip reveal" role="button" tabindex="0" aria-pressed="false" aria-label="Rocket Test Stand. Kliknij, aby odwrócić i przeczytać opis.">
+        <div class="flip-inner">
+          <div class="face front proj">
+            <span class="hint">Kliknij, aby odwrócić</span>
+            <div class="txt">
+              <small>Technika rakietowa</small>
+              <h3>Rocket Test Stand</h3>
+            </div>
+        <div class="art" aria-hidden="true">
+          <svg class="chart" viewBox="0 0 400 190" preserveAspectRatio="none">
+            <defs><linearGradient id="fill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2997ff" stop-opacity=".35"/><stop offset="1" stop-color="#2997ff" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0 168 L50 168 C70 168 74 40 100 44 S150 70 200 66 S280 60 300 70 C325 84 330 168 352 168 L400 168 L400 190 L0 190Z" fill="url(#fill1)"/>
+            <path class="ln" pathLength="1" d="M0 168 L50 168 C70 168 74 40 100 44 S150 70 200 66 S280 60 300 70 C325 84 330 168 352 168 L400 168" fill="none" stroke="#2997ff" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+          </svg>
+        </div>
+          </div>
+          <div class="face proj pback" aria-hidden="true">
+            <span class="hint">Odwróć z powrotem</span>
+            <small>Rocket Test Stand</small>
+            <p class="desc">Byłem odpowiedzialny za budowę stanowiska do pomiaru ciągu silnika rakietowego oraz za jego konfigurację.</p>
+          </div>
+        </div>
+      </article>
+      <article class="proj-flip reveal" role="button" tabindex="0" aria-pressed="false" aria-label="Bot do tradowania srebra. Kliknij, aby odwrócić i przeczytać opis.">
+        <div class="flip-inner">
+          <div class="face front proj">
+            <span class="hint">Kliknij, aby odwrócić</span>
+            <div class="txt">
+              <small>Automatyzacja · rynki</small>
+              <h3>Bot do tradowania srebra</h3>
+            </div>
+        <div class="art" aria-hidden="true">
+          <svg class="chart" viewBox="0 0 400 190" preserveAspectRatio="none">
+            <defs><linearGradient id="fill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c7c7cc" stop-opacity=".3"/><stop offset="1" stop-color="#c7c7cc" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0 132 L30 120 L55 138 L85 104 L110 116 L140 82 L170 96 L200 70 L230 88 L262 58 L290 74 L322 46 L352 60 L400 34 L400 190 L0 190Z" fill="url(#fill2)"/>
+            <path class="ln" pathLength="1" d="M0 132 L30 120 L55 138 L85 104 L110 116 L140 82 L170 96 L200 70 L230 88 L262 58 L290 74 L322 46 L352 60 L400 34" fill="none" stroke="#d1d1d6" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+        </div>
+          </div>
+          <div class="face proj pback" aria-hidden="true">
+            <span class="hint">Odwróć z powrotem</span>
+            <small>Bot do tradowania srebra</small>
+            <p class="desc">Bot, który wysyłał mi na Discordzie powiadomienia, kiedy warto było śledzić notowania.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="minor reveal">Po godzinach</h3>
+    <div class="hobbies reveal">
+      <div class="hob">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11"/><path d="M5 16h22M16 5v22M8.2 8.2c3.4 2.6 3.4 13 0 15.6M23.8 8.2c-3.4 2.6-3.4 13 0 15.6"/></svg>
+        <strong>Koszykówka</strong>
+      </div>
+      <div class="hob">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="9" r="4"/><path d="M12.5 13.5h7M14 13.5c0 5-2 7-3.5 9.5h11c-1.500-2.500-3.500-4.500-3.500-9.500M9 27h14v-4H9z"/></svg>
+        <strong>Szachy</strong>
+      </div>
+      <div class="hob">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M9.800 12.600C5.600 13.800 3 15.600 3.400 17.200c.6 2.300 6.800 2.700 13.800.9s12.200-5.200 11.600-7.500c-.4-1.500-3.100-2.200-6.900-2"/></svg>
+        <strong>Kosmos</strong>
+      </div>
+      <div class="hob">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="7" width="24" height="18" rx="2"/><path d="M10 7v11M16 7v11M22 7v11M4 18h24"/></svg>
+        <strong>Pianino</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. KONTAKT ============ -->
+<section class="contact" id="contact" data-tone="light">
+  <div class="deco orbit " data-speed=".06" style="--s:clamp(340px,44vw,640px);right:calc(clamp(340px,44vw,640px) * -.5);bottom:-30%;--t:50s" aria-hidden="true"><i></i><i></i></div>
+  <div class="deco lattice hide-s" data-speed="-.05" style="left:-30px;top:40px" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="label reveal">Kontakt</p>
+    <h2 class="reveal">Napisz do mnie.</h2>
+    <p class="sub reveal">Chętnie porozmawiam o pracy, praktykach, nauczaniu informatyki i o kosmosie.</p>
+    <a class="mail reveal" id="mail" href="mailto:bartosz.koziell@wp.pl">bartosz.koziell@wp.pl</a>
+    <button class="copy" id="copy" type="button">Kopiuj adres e-mail</button>
+    <div class="social reveal">
+      <a href="https://www.linkedin.com/in/bartosz-kozie%C5%82-01110936b/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.980 3.500a2.500 2.500 0 1 1 0 5 2.500 2.500 0 0 1 0-5zM3 9.750h4v11.500H3zM9.500 9.750h3.800v1.600h.05c.53-1 1.830-1.900 3.750-1.900 4 0 4.400 2.500 4.400 5.700v6.100h-4v-5.400c0-1.300 0-3-1.850-3s-2.150 1.400-2.150 2.900v5.500h-4z"/></svg>
+        <span><small>LinkedIn</small><b>Bartosz Kozieł</b></span>
+      </a>
+      <a href="https://github.com/VernonCruel">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.160 19.490c.5.09.68-.22.68-.48v-1.700c-2.780.6-3.370-1.340-3.370-1.340-.46-1.150-1.110-1.460-1.110-1.460-.9-.62.07-.6.07-.6 1 .07 1.530 1.030 1.530 1.030.9 1.520 2.340 1.080 2.900.83.1-.65.36-1.090.64-1.340-2.220-.25-4.560-1.110-4.560-4.940 0-1.100.39-1.990 1.030-2.690-.1-.25-.45-1.270.1-2.650 0 0 .84-.27 2.750 1.020a9.500 9.500 0 0 1 5 0c1.910-1.300 2.750-1.020 2.750-1.020.55 1.380.2 2.400.1 2.650.64.7 1.030 1.600 1.030 2.690 0 3.840-2.340 4.680-4.570 4.930.36.31.68.92.68 1.850v2.740c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+        <span><small>GitHub</small><b>VernonCruel</b></span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 Bartosz Kozieł</span><span>Kraków</span></div>
+</footer>
+
+<script>
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $$ = (s) => [...document.querySelectorAll(s)];
+  const nav = document.getElementById('nav');
+
+  // flip cards: click, Enter or Space turns one over
+  $$('.flip, .proj-flip').forEach(card => {
+    const [front, back] = card.querySelectorAll('.face');
+    const turn = () => { const on = card.classList.toggle('on'); card.setAttribute('aria-pressed', on); back.setAttribute('aria-hidden', !on); front.setAttribute('aria-hidden', on); };
+    card.addEventListener('click', turn);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); turn(); } });
+  });
+  function light(){}
+  const rail = $$('#rail a'), decos = $$('.deco');
+
+  // nav tone follows the band under it; active link follows the band in view
+  const bands = $$('section[data-tone]'), links = Object.fromEntries($$('.nav ul a').map(a => [a.getAttribute('href').slice(1), a]));
+  function tone(){
+    let cur = bands[0], mid = bands[0];
+    for (const b of bands){ const r = b.getBoundingClientRect(); if (r.top <= 26) cur = b; if (r.top <= innerHeight * .45) mid = b; }
+    nav.classList.toggle('dark', cur.dataset.tone === 'dark');
+    for (const id in links) links[id].classList.toggle('active', id === mid.id);
+    rail.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + mid.id));
+    if (!reduced) decos.forEach(d => { const r = d.parentElement.getBoundingClientRect(); d.style.transform = `translate3d(0,${(-r.top * d.dataset.speed).toFixed(1)}px,0)`; });
+  }
+
+  let tick = false;
+  function onScroll(){ if (tick) return; tick = true; requestAnimationFrame(() => { tick = false; light(); tone(); }); }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll);
+  light(); tone();
+
+  if ('IntersectionObserver' in window && !reduced){
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px', threshold: .1 });
+    $$('.reveal').forEach(el => io.observe(el));
+  } else $$('.reveal').forEach(el => el.classList.add('in'));
+
+  const btn = document.getElementById('copy'), mail = document.getElementById('mail');
+  btn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(mail.textContent.trim()); btn.textContent = 'Skopiowano'; }
+    catch (_){ const r = document.createRange(); r.selectNodeContents(mail); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Zaznaczono. Naciśnij Ctrl lub ⌘ + C'; }
+    setTimeout(() => { btn.textContent = 'Kopiuj adres e-mail'; }, 2400);
+  });
+})();
+</script>
+</body>
+</html>
