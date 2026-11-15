@@ -48,6 +48,8 @@ h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance}
 .nav ul::-webkit-scrollbar{display:none}
 .nav ul a{font-size:12.5px;letter-spacing:0;opacity:.72;white-space:nowrap;padding:8px 0;display:block;transition:opacity .25s}
 .nav ul a:hover,.nav ul a.active{opacity:1}
+.lang{flex:none;font:600 11.5px var(--body);letter-spacing:.04em;color:inherit;background:none;border:1px solid currentColor;border-radius:999px;padding:4px 11px;cursor:pointer;opacity:.75;transition:opacity .25s,background .25s}
+.lang:hover{opacity:1}
 
 /* ---------- Bands ---------- */
 section{padding:clamp(88px,13vw,168px) 0}
@@ -229,7 +231,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
 }
 @media (max-width:700px){
   body{font-size:17px}
-  .nav{justify-content:center}.nav .name{display:none}
+  .nav{justify-content:space-between;gap:14px}.nav .name{display:none}
   .split{grid-template-columns:minmax(0,1fr);gap:18px}
   .cols,.tiles,.social{grid-template-columns:minmax(0,1fr)}
   .rows li{grid-template-columns:minmax(0,1fr)}
@@ -254,6 +256,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
     <li><a href="#projects">Projekty</a></li>
     <li><a href="#contact">Kontakt</a></li>
   </ul>
+  <button class="lang" id="lang" type="button" aria-label="Switch to English">EN</button>
 </header>
 
 <nav class="rail" id="rail" aria-label="Sekcje">
@@ -384,7 +387,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
           <div class="face front proj">
             <span class="hint">Kliknij, aby odwrócić</span>
             <div class="txt">
-              <small>Technika rakietowa</small>
+              <small>Koło naukowe ThrustLab AGH</small>
               <h3>Rocket Test Stand</h3>
             </div>
         <div class="art" aria-hidden="true">
@@ -398,7 +401,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
           <div class="face proj pback" aria-hidden="true">
             <span class="hint">Odwróć z powrotem</span>
             <small>Rocket Test Stand</small>
-            <p class="desc">Byłem odpowiedzialny za budowę stanowiska do pomiaru ciągu silnika rakietowego oraz za jego konfigurację.</p>
+            <p class="desc">Projekt koła naukowego ThrustLab AGH. Byłem odpowiedzialny za budowę stanowiska do pomiaru ciągu silnika rakietowego oraz za jego konfigurację.</p>
           </div>
         </div>
       </article>
@@ -407,7 +410,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
           <div class="face front proj">
             <span class="hint">Kliknij, aby odwrócić</span>
             <div class="txt">
-              <small>Automatyzacja · rynki</small>
+              <small>Projekt własny · AI</small>
               <h3>Bot do tradowania srebra</h3>
             </div>
         <div class="art" aria-hidden="true">
@@ -421,7 +424,7 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
           <div class="face proj pback" aria-hidden="true">
             <span class="hint">Odwróć z powrotem</span>
             <small>Bot do tradowania srebra</small>
-            <p class="desc">Bot, który wysyłał mi na Discordzie powiadomienia, kiedy warto było śledzić notowania.</p>
+            <p class="desc">Domowy projekt napisany z pomocą AI. Bot sprawdzał różne czynniki, oceniał na ich podstawie, czy warto kupić, i wysyłał mi powiadomienia na Discordzie.</p>
           </div>
         </div>
       </article>
@@ -483,6 +486,26 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
   const $$ = (s) => [...document.querySelectorAll(s)];
   const nav = document.getElementById('nav');
 
+
+  // language switch: Polish is the source text; English comes from this dictionary
+  const EN = {"Start": "Home", "O mnie": "About", "Edukacja": "Education", "Projekty": "Projects", "Kontakt": "Contact", "Student AGH": "AGH student", "Informatyka, Materiały, Kosmos.": "Informatics, Materials, Space.", "Inżynier edukacji techniczno-informatycznej.": "Engineer in Technical and Computer Science Education.", "Przyszły magister technologii kosmicznych.": "Future Master of Space Technologies.", "Napisz do mnie": "Get in touch", "Ambicje i doświadczenie": "Ambitions and experience", "Kliknij, aby odwrócić": "Click to flip", "Odwróć z powrotem": "Flip back", "Akademia Górniczo-Hutnicza, Kraków": "AGH University of Krakow", "Jestem studentem technologii kosmicznych na AGH, ciekawym świata i nowych technologii. Lubię uczyć się nowych rzeczy, podejmować wyzwania i rozwijać własne pomysły. Poza studiami stawiam na aktywność fizyczną – sport, rywalizacja i dobra zabawa to ważna część mojego życia.": "I'm a Space Technologies student at AGH, curious about the world and new technology. I like learning new things, taking on challenges and developing my own ideas. Outside my studies I stay active – sport, competition and having fun are an important part of my life.", "Kosmos": "Space", "Koszykówka": "Basketball", "Szachy": "Chess", "Pianino": "Piano", "Ambicje i doświadczenie.": "Ambitions and experience.", "Ambicje": "Ambitions", "Praca magisterska": "Master's thesis", "Pracuję nad pracą magisterską poświęconą ochronie powierzchni refleksyjnych przed ściernym oddziaływaniem regolitu księżycowego. To zagadnienie, które może mieć znaczenie dla trwałości materiałów i komponentów wykorzystywanych w przyszłych misjach kosmicznych.": "I'm working on a master's thesis on protecting reflective surfaces against abrasion by lunar regolith. It's a problem that may matter for the durability of materials and components used in future space missions.", "W dłuższej perspektywie": "In the long run", "Chcę rozwijać się na styku informatyki i zaawansowanych technologii, łącząc umiejętności techniczne z kreatywnym rozwiązywaniem problemów. Zależy mi na pracy przy projektach, które pozwalają nieustannie się uczyć, eksperymentować i tworzyć coś wartościowego.": "I want to grow where computer science meets advanced technology, combining technical skills with creative problem solving. I care about working on projects that let me keep learning, experimenting and building something of value.", "Doświadczenie": "Experience", "Nauczyciel informatyki, praktyka": "Computer science teacher, teaching practice", "marzec – czerwiec 2025": "March – June 2025", "Wspierałem prowadzenie lekcji informatyki i samodzielnie prowadziłem zajęcia z ćwiczeniami praktycznymi.": "I supported computer science lessons and independently taught classes with hands-on exercises.", "Barman": "Bartender", "październik 2023 – marzec 2025": "October 2023 – March 2025", "Obsługa baru, przyjmowanie i weryfikacja dostaw oraz przygotowanie dwóch koncertów miesięcznie.": "Running the bar, receiving and verifying deliveries, and setting up two concerts a month.", "Od sali lekcyjnej do orbity.": "From the classroom to orbit.", "Studia": "Degrees", "Magister, Technologie kosmiczne": "Master's degree, Space Technologies", "Akademia Górniczo-Hutnicza im. Stanisława Staszica w Krakowie": "AGH University of Krakow", "Studia magisterskie w zakresie technologii kosmicznych.": "Master's programme in space technologies.", "Studia inżynierskie, Edukacja techniczno-informatyczna": "Engineer's degree, Technical and Computer Science Education", "Teoria połączona z praktycznym zastosowaniem w nauczaniu przedmiotów informatycznych.": "Theory combined with its practical use in teaching computer science subjects.", "Kursy": "Courses", "Podstawy analizy danych": "Data analysis fundamentals", "Komputery, systemy operacyjne i bezpieczeństwo": "Computers, operating systems and security", "Podstawy pracy w MATLAB-ie": "MATLAB fundamentals", "ESA · w trakcie": "ESA · in progress", "Kurs Europejskiej Agencji Kosmicznej": "European Space Agency course", "Umiejętności i języki": "Skills and languages", "Programowanie": "Programming", "Podstawy": "Fundamentals", "Bazy danych": "Databases", "Sieci": "Networking", "Podstawy sieci komputerowych": "Computer networking fundamentals", "Język obcy": "Foreign language", "Angielski": "English", "Poziom B2": "Level B2", "Projekty i hobby": "Projects and hobbies", "Co zrobiłem i co lubię.": "What I've built and what I enjoy.", "Koło naukowe ThrustLab AGH": "ThrustLab AGH student research group", "Projekt koła naukowego ThrustLab AGH. Byłem odpowiedzialny za budowę stanowiska do pomiaru ciągu silnika rakietowego oraz za jego konfigurację.": "A ThrustLab AGH student research group project. I was responsible for building the rocket engine thrust measurement stand and for its configuration.", "Projekt własny · AI": "Personal project · AI", "Bot do tradowania srebra": "Silver Trading Bot", "Domowy projekt napisany z pomocą AI. Bot sprawdzał różne czynniki, oceniał na ich podstawie, czy warto kupić, i wysyłał mi powiadomienia na Discordzie.": "A home project written with the help of AI. The bot checked several factors, used them to assess whether it was worth buying, and sent me notifications on Discord.", "Po godzinach": "After hours", "Napisz do mnie.": "Get in touch.", "Chętnie porozmawiam o pracy, praktykach, nauczaniu informatyki i o kosmosie.": "I'm happy to talk about jobs, internships, teaching computer science and space.", "Kopiuj adres e-mail": "Copy email address", "Sekcje": "Sections", "Karta o mnie. Kliknij, aby odwrócić.": "About me card. Click to flip.", "Rocket Test Stand. Kliknij, aby odwrócić i przeczytać opis.": "Rocket Test Stand. Click to flip and read the description.", "Bot do tradowania srebra. Kliknij, aby odwrócić i przeczytać opis.": "Silver Trading Bot. Click to flip and read the description."};
+  const norm = t => t.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  const i18n = [];
+  { const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
+    while ((n = w.nextNode())){ const p = n.parentElement; if (!p || p.closest('script,style')) continue; const k = norm(n.nodeValue), en = EN[k];
+      if (en){ const node = n; i18n.push({ set: v => { node.nodeValue = v; }, pl: node.nodeValue, en: node.nodeValue.replace(node.nodeValue.trim(), en) }); } }
+    $$('[aria-label]').forEach(el => { const pl = el.getAttribute('aria-label'), en = EN[pl]; if (en) i18n.push({ set: v => el.setAttribute('aria-label', v), pl, en }); }); }
+  const UI = { pl: { copied: 'Skopiowano', sel: 'Zaznaczono. Naciśnij Ctrl lub ⌘ + C', copy: 'Kopiuj adres e-mail' }, en: { copied: 'Copied', sel: 'Selected. Press Ctrl or ⌘ + C', copy: 'Copy email address' } };
+  const langBtn = document.getElementById('lang');
+  let lang = 'pl';
+  function setLang(l, save){ lang = l; i18n.forEach(x => x.set(x[l])); document.documentElement.lang = l;
+    langBtn.textContent = l === 'en' ? 'PL' : 'EN'; langBtn.setAttribute('aria-label', l === 'en' ? 'Przełącz na polski' : 'Switch to English');
+    if (save) try { localStorage.setItem('lang', l); } catch (_){} }
+  { let saved = null; try { saved = localStorage.getItem('lang'); } catch (_){}
+    const auto = (navigator.language || 'pl').toLowerCase().startsWith('pl') ? 'pl' : 'en';
+    if ((saved || auto) === 'en') setLang('en', false); }
+  langBtn.addEventListener('click', () => setLang(lang === 'en' ? 'pl' : 'en', true));
+
   // flip cards: click, Enter or Space turns one over
   $$('.flip, .proj-flip').forEach(card => {
     const [front, back] = card.querySelectorAll('.face');
@@ -516,9 +539,9 @@ footer .wrap{border-top:1px solid var(--hair);padding-top:18px;display:flex;just
 
   const btn = document.getElementById('copy'), mail = document.getElementById('mail');
   btn.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(mail.textContent.trim()); btn.textContent = 'Skopiowano'; }
-    catch (_){ const r = document.createRange(); r.selectNodeContents(mail); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Zaznaczono. Naciśnij Ctrl lub ⌘ + C'; }
-    setTimeout(() => { btn.textContent = 'Kopiuj adres e-mail'; }, 2400);
+    try { await navigator.clipboard.writeText(mail.textContent.trim()); btn.firstChild.nodeValue = UI[lang].copied; }
+    catch (_){ const r = document.createRange(); r.selectNodeContents(mail); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.firstChild.nodeValue = UI[lang].sel; }
+    setTimeout(() => { btn.firstChild.nodeValue = UI[lang].copy; }, 2400);
   });
 })();
 </script>
